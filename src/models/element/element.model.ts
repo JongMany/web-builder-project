@@ -35,10 +35,19 @@ const componentMap = {
 };
 
 export class ElementModelTree {
-  root: ElementModel | ElementBodyModel = {
+  root: ElementModel = {
     id: "root",
-    type: "Body",
-    properties: {},
+    type: "Card", // 'Body'
+    properties: {
+      style: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      },
+    },
     children: [],
   };
   constructor() {}
@@ -96,7 +105,7 @@ export class ElementModelTree {
 
     return React.createElement(
       Component,
-      { ...properties, key: element.id },
+      { ...properties, key: element.id, "data-element-id": element.id },
       childElements
     );
   }
