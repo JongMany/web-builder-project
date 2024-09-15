@@ -1,3 +1,4 @@
+import { checkIsInArea } from "@/lib/check-is-in-area";
 import { useDndElementStore } from "@/stores/dnd-element.store";
 import { MouseEvent as ReactMouseEvent, useEffect, useRef } from "react";
 
@@ -5,28 +6,31 @@ const Builder = () => {
   const { activeElement } = useDndElementStore();
   const builderRef = useRef<HTMLDivElement>(null);
 
+  // 공간을 감지하는 함수
   const detectSpaceHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
-    console.log("activeElement", activeElement);
     if (!activeElement) return;
 
     console.log("detect Space!", activeElement, event.clientX, event.clientY);
   };
-  const attachElementHandler = (ev: MouseEvent) => {
+
+  // 추가해주는 함수
+  const addElementHandler = (ev: MouseEvent) => {
     if (!builderRef.current) return;
-    const rect = builderRef.current.getBoundingClientRect();
+    const { left, right, top, bottom } =
+      builderRef.current.getBoundingClientRect();
     const { clientX: x, clientY: y } = ev;
 
     // Builder 외에 위치하면 Early Return
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+    if (checkIsInArea({ x, y }, { left, right, top, bottom })) {
       return;
     }
   };
 
   useEffect(() => {
-    window.addEventListener("mouseup", attachElementHandler);
+    window.addEventListener("mouseup", addElementHandler);
 
     return () => {
-      window.removeEventListener("mouseup", attachElementHandler);
+      window.removeEventListener("mouseup", addElementHandler);
     };
   }, [activeElement]);
 
@@ -35,7 +39,10 @@ const Builder = () => {
       ref={builderRef}
       className="w-full border-2 h-full"
       onMouseEnter={detectSpaceHandler}
-    ></div>
+    >
+      {/* Builder */}
+      {}
+    </div>
   );
 };
 
