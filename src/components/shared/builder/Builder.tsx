@@ -1,60 +1,46 @@
 import { checkIsInArea } from "@/lib/geometry/check-is-in-area";
-import { calculateDistance } from "@/lib/geometry/calculate-distance";
 import { ElementModelTree } from "@/models/element/element.model";
 import { useDndElementStore } from "@/stores/dnd-element.store";
-import {
-  MouseEvent as ReactMouseEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const Builder = () => {
-  const elementTree = useRef(new ElementModelTree());
   const { activeElement } = useDndElementStore();
   const builderRef = useRef<HTMLDivElement>(null);
-
+  const elementTree = useRef(new ElementModelTree());
   const [closestElementId, setClosestElementId] = useState<string | null>(null);
-  // 각 Element에 대한 refs 저장
-  // 특정 부모 요소 내에서 자식 요소 탐색
-  const detectClosestChildElement = (
+
+  // 최신 상태 값을 참조할 수 있도록 이벤트 핸들러를 ref로 관리
+  const addElementHandlerRef = useRef<(ev: MouseEvent) => void>();
+
+  const detectClosestElementId = (
     parentElement: HTMLElement,
     mouseX: number,
     mouseY: number
   ) => {
-    let closestId = null;
-    let minDistance = Infinity;
+    const rect = parentElement.getBoundingClientRect();
+    const { top, bottom, left, right } = rect;
 
-    // 부모 요소 내의 모든 자식 요소 탐색
-    parentElement
-      .querySelectorAll("[data-element-id]")
-      .forEach((childElement) => {
-        const rect = childElement.getBoundingClientRect();
-        const distance = calculateDistance(mouseX, mouseY, rect);
-        console.log(rect, distance, minDistance);
-        // TODO: 확인해볼게
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestId = childElement.getAttribute("data-element-id");
-          console.log(closestId);
-        }
-      });
+    if (
+      !checkIsInArea({ x: mouseX, y: mouseY }, { top, bottom, left, right })
+    ) {
+      return null;
+    }
+    console.log("parentElement", parentElement);
 
-    // 가장 가까운 자식 요소를 상태로 저장
-    setClosestElementId(closestId);
+    return parentElement.getAttribute("data-element-id") || null;
   };
-
   // 공간을 감지하는 함수
-  const detectSpaceHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
+  const detectSpaceHandler = useCallback((event: React.MouseEvent) => {
+    const activeElement = useDndElementStore.getState().activeElement;
     if (!activeElement || !builderRef.current) return;
-
     const { clientX: x, clientY: y } = event;
+    const targetElement = event.target as HTMLElement;
+    if (!targetElement.getAttribute("data-element-id")) return;
 
-    // 각 요소의 거리 계산
-    detectClosestChildElement(builderRef.current, x, y);
-  };
+    const closestElementId = detectClosestElementId(targetElement, x, y);
 
-  console.log(closestElementId);
+    setClosestElementId(closestElementId);
+  }, []);
 
   // 추가해주는 함수
   const addElementHandler = (ev: MouseEvent) => {
@@ -64,25 +50,41 @@ const Builder = () => {
     const { clientX: x, clientY: y } = ev;
 
     // Builder 외에 위치하면 Early Return
-    if (checkIsInArea({ x, y }, { left, right, top, bottom })) {
+    if (!checkIsInArea({ x, y }, { left, right, top, bottom })) {
+      setClosestElementId(null);
       return;
     }
-    // 놓게 되면 추가하기
+
+    if (activeElement && closestElementId) {
+      elementTree.current.addElement(closestElementId, activeElement);
+    }
+    setClosestElementId(null);
   };
 
+  // ref에 이벤트 핸들러 업데이트
   useEffect(() => {
-    window.addEventListener("mouseup", addElementHandler);
+    addElementHandlerRef.current = addElementHandler;
+  }, [closestElementId, activeElement]);
+
+  // 이벤트 등록
+  useEffect(() => {
+    const handler = (ev: MouseEvent) => addElementHandlerRef.current?.(ev);
+
+    window.addEventListener("mouseup", handler);
 
     return () => {
-      window.removeEventListener("mouseup", addElementHandler);
+      window.removeEventListener("mouseup", handler);
     };
-  }, [activeElement]);
+  }, []);
 
   return (
     <div
       ref={builderRef}
       className="w-full border-2 h-full"
-      onMouseEnter={detectSpaceHandler}
+      onMouseMove={detectSpaceHandler}
+      // onMouseUp={() => {}}
+      // onMouseEnter={detectSpaceHandler}
+      data-element-id="root"
     >
       {/* Builder */}
       {elementTree.current.createReactElement(elementTree.current.root)}

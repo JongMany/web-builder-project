@@ -54,7 +54,7 @@ export const ElementItem = ({ label, elementType }: Props) => {
       {label}
       {activeElement === elementType && (
         <div
-          className="px-2 rounded-md border-2 opacity-40 w-[90px] h-[90px] absolute"
+          className="px-2 rounded-md border-2 opacity-40 w-[90px] h-[90px] absolute pointer-events-none"
           style={{
             left: currentPosition.x - startPosition.x,
             top: currentPosition.y - startPosition.y,

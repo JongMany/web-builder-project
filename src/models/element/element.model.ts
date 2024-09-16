@@ -1,5 +1,5 @@
 import { ElementType } from "@/models/element/element.type";
-import React from "react";
+import React, { EventHandler, MouseEvent, MouseEventHandler } from "react";
 
 interface ElementBodyModel {
   // Define the data structure for your component
@@ -14,7 +14,7 @@ interface ElementModel {
   id: string;
   type: ElementType;
   properties: Record<string, any>;
-  children?: ElementModel[];
+  children?: ElementModel[] | null;
 }
 
 interface IElementViewModel {
@@ -50,10 +50,16 @@ export class ElementModelTree {
     },
     children: [],
   };
+
   constructor() {}
 
-  addElement(element: ElementModel) {
-    this.root.children?.push(element);
+  addElement(parentId: string, elementType: ElementType) {
+    const parentElement = this.findElement(parentId);
+    if (parentElement) {
+      parentElement.children?.push(createElementByElementType(elementType));
+      console.log(parentElement);
+    }
+    // this.root.children?.push(element);
   }
 
   removeElement(id: string) {
@@ -100,6 +106,7 @@ export class ElementModelTree {
       console.error(`Unsupported component type: ${type}`);
       return null;
     }
+
     const childElements =
       children?.map((child) => this.createReactElement(child)) || null;
 
@@ -108,5 +115,70 @@ export class ElementModelTree {
       { ...properties, key: element.id, "data-element-id": element.id },
       childElements
     );
+  }
+}
+
+function createElementByElementType(elementType: ElementType) {
+  switch (elementType) {
+    case "Input":
+    case "Textarea":
+      return {
+        type: elementType,
+        id: Math.random().toString(),
+        "data-element-id": Math.random().toString(),
+        properties: {
+          style: {
+            width: "100px",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px solid #000",
+            pointerEvents: "auto",
+            position: "relative",
+          },
+        },
+        children: null,
+      };
+    case "Card":
+      return {
+        type: elementType,
+        id: Math.random().toString(),
+        "data-element-id": Math.random().toString(),
+        properties: {
+          style: {
+            width: "100%",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px solid #000",
+            pointerEvents: "auto",
+            position: "relative",
+          },
+        },
+        children: [],
+      };
+    case "Button":
+    case "Select":
+    case "Label":
+      return {
+        type: elementType,
+        id: Math.random().toString(),
+        "data-element-id": Math.random().toString(),
+        properties: {
+          style: {
+            width: "100px",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px solid #000",
+            pointerEvents: "auto",
+            position: "relative",
+          },
+        },
+        children: [],
+      };
   }
 }
