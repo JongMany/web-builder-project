@@ -1,5 +1,5 @@
 import { ElementType } from "@/models/element/element.type";
-import React, { EventHandler, MouseEvent, MouseEventHandler } from "react";
+import React from "react";
 
 interface ElementBodyModel {
   // Define the data structure for your component
@@ -96,7 +96,10 @@ export class ElementModelTree {
     }
   }
 
-  createReactElement(element: ElementModel): React.ReactElement | null {
+  createReactElement(
+    element: ElementModel,
+    highlightedElementId: string | null
+  ): React.ReactElement | null {
     const { type, properties, children } = element;
 
     // 지정된 type에 따른 컴포넌트 선택
@@ -108,13 +111,40 @@ export class ElementModelTree {
     }
 
     const childElements =
-      children?.map((child) => this.createReactElement(child)) || null;
+      children?.map((child) =>
+        this.createReactElement(child, highlightedElementId)
+      ) || null;
+
+    const isHighlighted = highlightedElementId === element.id;
+    const style = isHighlighted
+      ? {
+          ...properties.style,
+          border: "2px solid red", // 하이라이트 스타일
+        }
+      : properties.style;
 
     return React.createElement(
       Component,
-      { ...properties, key: element.id, "data-element-id": element.id },
+      { ...properties, style, key: element.id, "data-element-id": element.id },
       childElements
     );
+  }
+
+  highlightElement(id: string) {
+    const element = this.findElement(id);
+    const originalStyle = element?.properties.style;
+
+    if (element) {
+      console.log(element, originalStyle);
+      element.properties.style = {
+        ...originalStyle,
+        border: "2px solid red",
+      };
+
+      setTimeout(() => {
+        element.properties.style = originalStyle;
+      }, 10);
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import { detectClosestElementId } from "@/lib/geometry/calculate-distance";
 import { checkIsInArea } from "@/lib/geometry/check-is-in-area";
 import { ElementModelTree } from "@/models/element/element.model";
 import { useDndElementStore } from "@/stores/dnd-element.store";
@@ -8,27 +9,28 @@ const Builder = () => {
   const builderRef = useRef<HTMLDivElement>(null);
   const elementTree = useRef(new ElementModelTree());
   const [closestElementId, setClosestElementId] = useState<string | null>(null);
+  const [highlightedElementId, setHighlightedElementId] = useState<
+    string | null
+  >(null);
 
   // 최신 상태 값을 참조할 수 있도록 이벤트 핸들러를 ref로 관리
   const addElementHandlerRef = useRef<(ev: MouseEvent) => void>();
 
-  const detectClosestElementId = (
-    parentElement: HTMLElement,
-    mouseX: number,
-    mouseY: number
-  ) => {
-    const rect = parentElement.getBoundingClientRect();
-    const { top, bottom, left, right } = rect;
+  // 하이라이트 처리 함수
+  const highlightElement = useCallback((id: string) => {
+    setHighlightedElementId(id);
 
-    if (
-      !checkIsInArea({ x: mouseX, y: mouseY }, { top, bottom, left, right })
-    ) {
-      return null;
+    setTimeout(() => {
+      setHighlightedElementId(null); // 하이라이트 해제
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    if (closestElementId) {
+      highlightElement(closestElementId);
     }
-    console.log("parentElement", parentElement);
+  }, [closestElementId, highlightElement]);
 
-    return parentElement.getAttribute("data-element-id") || null;
-  };
   // 공간을 감지하는 함수
   const detectSpaceHandler = useCallback((event: React.MouseEvent) => {
     const activeElement = useDndElementStore.getState().activeElement;
@@ -37,8 +39,7 @@ const Builder = () => {
     const targetElement = event.target as HTMLElement;
     if (!targetElement.getAttribute("data-element-id")) return;
 
-    const closestElementId = detectClosestElementId(targetElement, x, y);
-
+    const closestElementId = detectClosestElementId(targetElement, { x, y });
     setClosestElementId(closestElementId);
   }, []);
 
@@ -66,10 +67,15 @@ const Builder = () => {
     addElementHandlerRef.current = addElementHandler;
   }, [closestElementId, activeElement]);
 
+  useEffect(() => {
+    if (closestElementId) {
+      elementTree.current.highlightElement(closestElementId);
+    }
+  }, [closestElementId]);
+
   // 이벤트 등록
   useEffect(() => {
     const handler = (ev: MouseEvent) => addElementHandlerRef.current?.(ev);
-
     window.addEventListener("mouseup", handler);
 
     return () => {
@@ -82,12 +88,13 @@ const Builder = () => {
       ref={builderRef}
       className="w-full border-2 h-full"
       onMouseMove={detectSpaceHandler}
-      // onMouseUp={() => {}}
-      // onMouseEnter={detectSpaceHandler}
       data-element-id="root"
     >
       {/* Builder */}
-      {elementTree.current.createReactElement(elementTree.current.root)}
+      {elementTree.current.createReactElement(
+        elementTree.current.root,
+        highlightedElementId
+      )}
     </div>
   );
 };
