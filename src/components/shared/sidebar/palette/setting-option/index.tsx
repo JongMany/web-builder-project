@@ -1,4 +1,5 @@
 import { ButtonOption } from "@/components/shared/sidebar/palette/setting-option/ButtonOption";
+import CardOption from "@/components/shared/sidebar/palette/setting-option/CardOption";
 import { ElementBodyModel, ElementModel } from "@/models/element/element.model";
 
 type Props = {
@@ -10,6 +11,9 @@ export const SettingOption = ({ selectedItem }: Props) => {
     return <ButtonOption selectedItem={selectedItem} />;
   }
 
+  if (selectedItem.type === "Card") {
+    return <CardOption selectedItem={selectedItem} />;
+  }
   // if (type === "Label") {
   //   return (
   //     <div>

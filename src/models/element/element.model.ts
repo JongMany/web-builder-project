@@ -207,7 +207,8 @@ export class ElementModelTree {
     const mergedStyle = isHighlighted
       ? {
           ...style,
-          border: "2px solid red", // 하이라이트 스타일
+          borderWidth: "2px", // 하이라이트 스타일
+          borderColor: "red", // 하이라이트 스타일
         }
       : style;
 

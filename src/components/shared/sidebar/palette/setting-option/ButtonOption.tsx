@@ -149,6 +149,13 @@ export const ButtonOption = ({ selectedItem }: Props) => {
         />
         <span>px</span>
       </div>
+      {/* <div className="flex items-center text-[14px]">
+        <div className="flex gap-[4px] cursor-pointer">
+          <span>왼쪽 정렬</span>
+          <span>중앙 정렬</span>
+          <span>오른쪽 정렬</span>
+        </div>
+      </div> */}
       <div>
         <button onClick={removeHandler}>제거</button>
       </div>
