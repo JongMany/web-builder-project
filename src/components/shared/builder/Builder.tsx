@@ -2,11 +2,22 @@ import { detectClosestElementId } from "@/lib/geometry/calculate-distance";
 import { checkIsInArea } from "@/lib/geometry/check-is-in-area";
 import { useDndElementStore } from "@/stores/dnd-element.store";
 import { useEditStatusStore } from "@/stores/edit-status.store";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 const Builder = () => {
   const { activeElement } = useDndElementStore();
-  const { setSelectedItemId, elementTree } = useEditStatusStore();
+  const {
+    setSelectedItemId,
+    elementTree,
+    addElementItem,
+    restoreEventHandlers,
+  } = useEditStatusStore();
   const builderRef = useRef<HTMLDivElement>(null);
   // const elementTree = useRef(new ElementModelTree());
 
@@ -59,8 +70,7 @@ const Builder = () => {
     }
 
     if (activeElement && closestElementId) {
-      // elementTree.current.addElement(closestElementId, activeElement, {
-      elementTree.addElement(closestElementId, activeElement, {
+      addElementItem(closestElementId, activeElement, {
         onClickHandler: (e: React.MouseEvent) => {
           e.stopPropagation();
           const target = e.target as HTMLElement;
@@ -73,6 +83,20 @@ const Builder = () => {
           // detectSpaceHandler(e);
         },
       });
+      // elementTree.current.addElement(closestElementId, activeElement, {
+      // elementTree.addElement(closestElementId, activeElement, {
+      //   onClickHandler: (e: React.MouseEvent) => {
+      //     e.stopPropagation();
+      //     const target = e.target as HTMLElement;
+      //     setSelectedItemId(
+      //       target.getAttribute("data-element-id") || closestElementId
+      //     );
+      //   },
+      //   onMouseDownHandler: (e: React.MouseEvent) => {
+      //     console.log("dragging", e);
+      //     // detectSpaceHandler(e);
+      //   },
+      // });
     }
     setClosestElementId(null);
   };
@@ -90,6 +114,22 @@ const Builder = () => {
     return () => {
       window.removeEventListener("mouseup", handler);
     };
+  }, []);
+
+  useLayoutEffect(() => {
+    restoreEventHandlers({
+      onClickHandler: (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const target = e.target as HTMLElement;
+        setSelectedItemId(
+          target.getAttribute("data-element-id") || closestElementId
+        );
+      },
+      onMouseDownHandler: (e: React.MouseEvent) => {
+        console.log("dragging", e);
+        // detectSpaceHandler(e);
+      },
+    });
   }, []);
 
   return (

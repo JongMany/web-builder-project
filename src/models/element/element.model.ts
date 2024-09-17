@@ -37,24 +37,28 @@ const componentMap = {
 };
 
 export class ElementModelTree {
-  root: ElementModel = {
-    id: "root",
-    type: "Card", // 'Body'
-    properties: {
-      style: {
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        // justifyContent: "center",
-        alignItems: "center",
-        overflowX: "hidden",
-      },
-    },
-    children: [],
-  };
+  root: ElementModel = this.getInitialRoot();
 
   constructor() {}
+
+  // Returns the initial root structure, used in both constructor and reset
+  getInitialRoot(): ElementModel {
+    return {
+      id: "root",
+      type: "Card",
+      properties: {
+        style: {
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflowX: "hidden",
+        },
+      },
+      children: [],
+    };
+  }
 
   addElement(
     parentId: string,
@@ -76,9 +80,9 @@ export class ElementModelTree {
       if (Array.isArray(parentElement.children)) {
         parentElement.children.push(item);
       }
-      console.log(parentElement);
     }
   }
+
   removeElement(id: string) {
     if (Array.isArray(this.root.children)) {
       this.root.children = this.root.children?.filter(
@@ -223,6 +227,66 @@ export class ElementModelTree {
     }
   }
 
+  // Serialize the element tree to JSON
+  serialize(): string {
+    return JSON.stringify(this.root);
+  }
+
+  // Resets the tree back to the initial state
+  reset() {
+    this.root = this.getInitialRoot();
+  }
+
+  restoreEventHandlers({
+    onClickHandler,
+    onMouseDownHandler,
+  }: {
+    onClickHandler?: (e: React.MouseEvent) => void;
+    onMouseDownHandler?: (e: React.MouseEvent) => void;
+  }) {
+    const restoreHandlers = (element: ElementModel) => {
+      // 여기서 이벤트 핸들러를 다시 설정 (필요한 경우)
+      element.properties = {
+        ...element.properties,
+        onClick: onClickHandler,
+        onMouseDown: onMouseDownHandler,
+      };
+
+      // 자식 요소들에 대해서도 재귀적으로 복원
+      if (Array.isArray(element.children)) {
+        element.children.forEach((child) => restoreHandlers(child));
+      }
+    };
+
+    restoreHandlers(this.root);
+  }
+
+  // Deserializes the tree from a JSON string
+  deserialize(serializedData: ElementModel) {
+    try {
+      this.root = serializedData;
+    } catch (error) {
+      console.error("Failed to deserialize the data:", error);
+    }
+  }
+
+  // // Stores the serialized data in localStorage
+  // saveToLocalStorage() {
+  //   const serializedData = this.serialize();
+  //   localStorage.setItem("elementModelTree", serializedData);
+  // }
+
+  // // Loads the data from localStorage and restores the tree
+  // loadFromLocalStorage() {
+  //   const serializedData = localStorage.getItem("elementModelTree");
+  //   if (serializedData) {
+  //     this.deserialize(serializedData);
+  //   } else {
+  //     console.log("No saved tree found in localStorage.");
+  //   }
+  // }
+
+  // Deep clone the element tree
   clone(): ElementModelTree {
     const clonedTree = new ElementModelTree();
     clonedTree.root = this.deepCloneElement(this.root);
