@@ -12,7 +12,6 @@ export function createElementByElementType(
 ) {
   switch (elementType) {
     case "Input":
-    case "Textarea":
       return {
         type: elementType,
         id: Math.random().toString(),
@@ -28,6 +27,30 @@ export function createElementByElementType(
             pointerEvents: "auto",
             position: "relative",
           },
+          placeholder: "placeholder",
+          onClick: onClickHandler, // 추가
+          onMouseDown: onMouseDownHandler, // 추가
+        },
+        children: null,
+      };
+    case "Textarea":
+      return {
+        type: elementType,
+        id: Math.random().toString(),
+        "data-element-id": Math.random().toString(),
+        properties: {
+          style: {
+            width: "100px",
+            height: "50px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px solid #000",
+            pointerEvents: "auto",
+            position: "relative",
+            resize: "none",
+          },
+          placeholder: "placeholder",
           onClick: onClickHandler, // 추가
           onMouseDown: onMouseDownHandler, // 추가
         },
@@ -40,8 +63,9 @@ export function createElementByElementType(
         "data-element-id": Math.random().toString(),
         properties: {
           style: {
+            maxWidth: "100%",
             width: "100%",
-            height: "50px",
+            minHeight: "50px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

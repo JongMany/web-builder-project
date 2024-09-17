@@ -69,7 +69,7 @@ const Builder = () => {
           );
         },
         onMouseDownHandler: (e: React.MouseEvent) => {
-          console.log("dragging");
+          console.log("dragging", e);
           // detectSpaceHandler(e);
         },
       });

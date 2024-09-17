@@ -46,8 +46,9 @@ export class ElementModelTree {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        // justifyContent: "center",
         alignItems: "center",
+        overflowX: "hidden",
       },
     },
     children: [],
@@ -87,23 +88,6 @@ export class ElementModelTree {
   }
 
   findElement(id: string) {
-    // const dfs = (
-    //   element: ElementModel | ElementBodyModel
-    // ): ElementModel | ElementBodyModel | null => {
-    //   if (element.id === id) {
-    //     return element;
-    //   }
-    //   if (element.children) {
-    //     for (const child of element.children) {
-    //       const result = dfs(child);
-    //       if (result) {
-    //         return result;
-    //       }
-    //     }
-    //   }
-    //   return null;
-    // };
-    // return dfs(this.root);
     const dfs = (
       element: ElementModel | ElementBodyModel
     ): ElementModel | ElementBodyModel | null => {
@@ -254,5 +238,57 @@ export class ElementModelTree {
         ? element.children.map((child) => this.deepCloneElement(child)) // 자식 요소들을 재귀적으로 복사
         : element.children, // 텍스트일 경우 그대로 복사
     };
+  }
+
+  // Convert the element tree to an HTML string
+
+  toHTML(element: ElementModel | null = this.root): string {
+    if (!element) return "";
+
+    // If the element has children as a string, it's likely text content
+    if (typeof element.children === "string") {
+      return `${element.children}`;
+    }
+
+    // Map element type to HTML tag or custom component
+    const Component = componentMap[element.type] || "div"; // Default to "div" if unsupported type
+
+    const attributes = this.generateAttributesString(element.properties);
+
+    // Recursively process child elements
+    const childrenHTML = Array.isArray(element.children)
+      ? element.children.map((child) => this.toHTML(child)).join("")
+      : "";
+
+    // Return the HTML for the element
+    return `<${Component}${attributes}>${childrenHTML}</${Component}>`;
+  }
+
+  private generateAttributesString(
+    properties: Record<string, any> | null
+  ): string {
+    if (!properties) return "";
+
+    const attributes: string[] = [];
+
+    // Convert properties into valid HTML attributes
+    for (const [key, value] of Object.entries(properties)) {
+      if (key === "style" && typeof value === "object") {
+        // Convert style object to inline style string
+        const styleString = Object.entries(value)
+          .map(([prop, val]) => `${this.toKebabCase(prop)}:${val}`)
+          .join(";");
+        attributes.push(`style="${styleString}"`);
+      } else {
+        // Handle other attributes
+        attributes.push(`${key}="${value}"`);
+      }
+    }
+
+    return attributes.length > 0 ? ` ${attributes.join(" ")}` : "";
+  }
+
+  private toKebabCase(str: string): string {
+    return str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
   }
 }

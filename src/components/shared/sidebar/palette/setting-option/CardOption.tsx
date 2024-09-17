@@ -29,6 +29,16 @@ const CardOption = ({ selectedItem }: Props) => {
     updateProperties(newStyles);
   };
 
+  const percentageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const number = parseInt(value);
+    const newStyles = {
+      ...styles,
+      [name]: `${number >= 0 ? number : 0}%`,
+    };
+    updateProperties(newStyles);
+  };
+
   // const textChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setText(e.target.value);
   // };
@@ -138,12 +148,12 @@ const CardOption = ({ selectedItem }: Props) => {
           type="number"
           className="w-[40px]"
           name="width"
-          value={styles.width.split("px")[0]}
-          onChange={pixelChange}
+          value={styles.width.split("%")[0]}
+          onChange={percentageChange}
         />
-        <span>px</span>
+        <span>%</span>
       </div>
-      <div className="flex items-center text-[14px]">
+      {/* <div className="flex items-center text-[14px]">
         <label className="min-w-[80px]">높이</label>
         <input
           type="number"
@@ -153,7 +163,7 @@ const CardOption = ({ selectedItem }: Props) => {
           onChange={pixelChange}
         />
         <span>px</span>
-      </div>
+      </div> */}
       <div className="flex flex-col items-center text-[14px]">
         <div className="flex gap-[4px] cursor-pointer">
           <span onClick={justifyContentChange("start")}>왼쪽 정렬</span>
@@ -233,6 +243,51 @@ const CardOption = ({ selectedItem }: Props) => {
             className="w-[40px]"
             name="paddingBottom"
             value={styles.paddingBottom.split("px")[0]}
+            onChange={pixelChange}
+          />
+          <span>px</span>
+        </div>
+        {/*  */}
+        <div className="flex items-center text-[14px]">
+          <label className="min-w-[80px]">왼쪽 마진</label>
+          <input
+            type="number"
+            className="w-[40px]"
+            name="marginLeft"
+            value={styles.marginLeft.split("px")[0]}
+            onChange={pixelChange}
+          />
+          <span>px</span>
+        </div>
+        <div className="flex items-center text-[14px]">
+          <label className="min-w-[80px]">오른쪽 마진</label>
+          <input
+            type="number"
+            className="w-[40px]"
+            name="marginRight"
+            value={styles.marginRight.split("px")[0]}
+            onChange={pixelChange}
+          />
+          <span>px</span>
+        </div>
+        <div className="flex items-center text-[14px]">
+          <label className="min-w-[80px]">위쪽 마진</label>
+          <input
+            type="number"
+            className="w-[40px]"
+            name="marginTop"
+            value={styles.marginTop.split("px")[0]}
+            onChange={pixelChange}
+          />
+          <span>px</span>
+        </div>
+        <div className="flex items-center text-[14px]">
+          <label className="min-w-[80px]">아래쪽 마진</label>
+          <input
+            type="number"
+            className="w-[40px]"
+            name="marginBottom"
+            value={styles.marginBottom.split("px")[0]}
             onChange={pixelChange}
           />
           <span>px</span>
