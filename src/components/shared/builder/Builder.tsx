@@ -1,13 +1,15 @@
 import { detectClosestElementId } from "@/lib/geometry/calculate-distance";
 import { checkIsInArea } from "@/lib/geometry/check-is-in-area";
-import { ElementModelTree } from "@/models/element/element.model";
 import { useDndElementStore } from "@/stores/dnd-element.store";
+import { useEditStatusStore } from "@/stores/edit-status.store";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const Builder = () => {
   const { activeElement } = useDndElementStore();
+  const { setSelectedItemId, elementTree } = useEditStatusStore();
   const builderRef = useRef<HTMLDivElement>(null);
-  const elementTree = useRef(new ElementModelTree());
+  // const elementTree = useRef(new ElementModelTree());
+
   const [closestElementId, setClosestElementId] = useState<string | null>(null);
   const [highlightedElementId, setHighlightedElementId] = useState<
     string | null
@@ -31,7 +33,7 @@ const Builder = () => {
     }
   }, [closestElementId, highlightElement]);
 
-  // 공간을 감지하는 함수
+  // 공간을 감지하는 함수 (문제 해결 방법 pointer-events: none)
   const detectSpaceHandler = useCallback((event: React.MouseEvent) => {
     const activeElement = useDndElementStore.getState().activeElement;
     if (!activeElement || !builderRef.current) return;
@@ -57,7 +59,20 @@ const Builder = () => {
     }
 
     if (activeElement && closestElementId) {
-      elementTree.current.addElement(closestElementId, activeElement);
+      // elementTree.current.addElement(closestElementId, activeElement, {
+      elementTree.addElement(closestElementId, activeElement, {
+        onClickHandler: (e: React.MouseEvent) => {
+          e.stopPropagation();
+          const target = e.target as HTMLElement;
+          setSelectedItemId(
+            target.getAttribute("data-element-id") || closestElementId
+          );
+        },
+        onMouseDownHandler: (e: React.MouseEvent) => {
+          console.log("dragging");
+          // detectSpaceHandler(e);
+        },
+      });
     }
     setClosestElementId(null);
   };
@@ -66,12 +81,6 @@ const Builder = () => {
   useEffect(() => {
     addElementHandlerRef.current = addElementHandler;
   }, [closestElementId, activeElement]);
-
-  useEffect(() => {
-    if (closestElementId) {
-      elementTree.current.highlightElement(closestElementId);
-    }
-  }, [closestElementId]);
 
   // 이벤트 등록
   useEffect(() => {
@@ -91,10 +100,11 @@ const Builder = () => {
       data-element-id="root"
     >
       {/* Builder */}
-      {elementTree.current.createReactElement(
+      {/* {elementTree.current.createReactElement(
         elementTree.current.root,
         highlightedElementId
-      )}
+      )} */}
+      {elementTree.createReactElement(elementTree.root, highlightedElementId)}
     </div>
   );
 };

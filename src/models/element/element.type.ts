@@ -4,7 +4,8 @@ export type ElementType =
   | "Textarea"
   | "Select"
   | "Card"
-  | "Label";
+  | "Label"
+  | "Text";
 export interface ElementProps {
   id: string;
   type: ElementType;
