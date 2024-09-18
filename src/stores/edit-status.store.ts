@@ -88,6 +88,7 @@ export const useEditStatusStore = create(
       ) => {
         const { elementTree } = get();
         const updatedElementTree = elementTree.clone();
+
         updatedElementTree.addElement(parentId, elementType, {
           onClickHandler,
           onMouseDownHandler,

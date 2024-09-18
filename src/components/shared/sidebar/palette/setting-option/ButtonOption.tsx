@@ -82,7 +82,7 @@ export const ButtonOption = ({ selectedItem }: Props) => {
           type="number"
           name="borderWidth"
           className="w-[40px]"
-          value={styles.borderWidth.split("px")[0]}
+          value={styles.borderWidth?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -93,7 +93,7 @@ export const ButtonOption = ({ selectedItem }: Props) => {
           type="number"
           name="borderRadius"
           className="w-[40px]"
-          value={styles.borderRadius.split("px")[0]}
+          value={styles.borderRadius?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -113,7 +113,7 @@ export const ButtonOption = ({ selectedItem }: Props) => {
           type="text"
           name="fontSize"
           className="w-[40px]"
-          value={styles.fontSize.split("px")[0]}
+          value={styles.fontSize?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -133,7 +133,7 @@ export const ButtonOption = ({ selectedItem }: Props) => {
           type="number"
           className="w-[40px]"
           name="width"
-          value={styles.width.split("px")[0]}
+          value={styles.width?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -144,7 +144,7 @@ export const ButtonOption = ({ selectedItem }: Props) => {
           type="number"
           className="w-[40px]"
           name="height"
-          value={styles.height.split("px")[0]}
+          value={styles.height?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>

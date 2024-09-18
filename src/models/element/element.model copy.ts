@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { createElementByElementType } from "@/lib/element/create-element-by-type";
 import { determineElementColor } from "@/lib/element/determine-element-color";
 import { ElementType } from "@/models/element/element.type";
@@ -28,15 +27,14 @@ export interface ElementModel {
 
 const componentMap = {
   Card: "section",
-  // Button: "button",
-  Button: Button,
+  Button: "button",
   Input: "input",
   Textarea: "textarea",
   Select: "select",
   Label: "label",
   Body: "body",
   Text: React.Fragment,
-  // Custom: CustomComponent, // 사용자 정의 컴포넌트가 있다면 추가
+  // 'custom-component': CustomComponent, // 사용자 정의 컴포넌트가 있다면 추가
 };
 
 export class ElementModelTree {
@@ -125,7 +123,6 @@ export class ElementModelTree {
     }
   }
 
-  // 텍스트 노드
   updateChildren(id: string, text: string) {
     const element = this.findElement(id);
     if (element) {
@@ -225,8 +222,8 @@ export class ElementModelTree {
           ...restProperties, // 사용자 정의 컴포넌트에 나머지 속성 전달
           style: mergedStyle as React.CSSProperties, // style 속성 전달
           key: element.id,
-          "data-element-id": element.id,
-        } as ComponentProps<any>,
+          // "data-element-id": element.id,
+        } as ComponentProps<typeof Component>,
         childElements
       );
     }
