@@ -15,6 +15,7 @@ const Builder = () => {
   const {
     setSelectedItemId,
     elementTree,
+    selectedItemId,
     addElementItem,
     restoreEventHandlers,
   } = useEditStatusStore();
@@ -86,6 +87,7 @@ const Builder = () => {
       });
     }
     setClosestElementId(null);
+    setSelectedItemId(null);
   };
 
   // ref에 전역 이벤트 핸들러 업데이트
@@ -131,7 +133,10 @@ const Builder = () => {
         elementTree.current.root,
         highlightedElementId
       )} */}
-      {elementTree.createReactElement(elementTree.root, highlightedElementId)}
+      {elementTree.createReactElement(elementTree.root, {
+        highlightedElementId,
+        selectedElementId: selectedItemId,
+      })}
     </div>
   );
 };

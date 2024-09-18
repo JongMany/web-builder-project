@@ -1,4 +1,5 @@
 import { createElementByElementType } from "@/lib/element/create-element-by-type";
+import { determineElementColor } from "@/lib/element/determine-element-color";
 import { ElementType } from "@/models/element/element.type";
 import React from "react";
 
@@ -160,7 +161,10 @@ export class ElementModelTree {
 
   createReactElement(
     element: ElementModel,
-    highlightedElementId: string | null
+    {
+      highlightedElementId,
+      selectedElementId,
+    }: { highlightedElementId: string | null; selectedElementId: string | null }
   ): React.ReactElement | null {
     const { type, properties, children } = element;
 
@@ -179,11 +183,12 @@ export class ElementModelTree {
 
     const childElements = Array.isArray(children)
       ? children.map((child) =>
-          this.createReactElement(child, highlightedElementId)
+          this.createReactElement(child, {
+            highlightedElementId,
+            selectedElementId,
+          })
         )
       : null;
-
-    const isHighlighted = highlightedElementId === element.id;
 
     if (!properties) {
       return React.createElement(Component, null, childElements);
@@ -191,14 +196,10 @@ export class ElementModelTree {
 
     // style 속성을 별도로 분리하여 처리
     const { style, ...restProperties } = properties;
+    const isHighlighted = highlightedElementId === element.id;
+    const isSelected = selectedElementId === element.id;
 
-    const mergedStyle = isHighlighted
-      ? {
-          ...style,
-          borderWidth: "2px", // 하이라이트 스타일
-          borderColor: "red", // 하이라이트 스타일
-        }
-      : style;
+    const mergedStyle = determineElementColor(style, isSelected, isHighlighted);
 
     if (typeof Component === "string") {
       // HTML 요소일 경우에는 style 속성을 전달할 수 있음

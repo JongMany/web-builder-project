@@ -38,7 +38,7 @@ type Action = {
 export const useEditStatusStore = create(
   persist<State & Action>(
     (set, get) => ({
-      editStatus: "Element",
+      editStatus: "Element" as EditStatus,
       selectedItemId: null,
       elementTree: new ElementModelTree(),
 
@@ -101,7 +101,10 @@ export const useEditStatusStore = create(
         set({ elementTree: updatedElementTree });
       },
       resetElementTree: () => {
-        set({ elementTree: new ElementModelTree() });
+        const { elementTree } = get();
+        const updatedElementTree = elementTree.clone();
+        updatedElementTree.reset();
+        set({ elementTree: updatedElementTree });
       },
     }),
     {
