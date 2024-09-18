@@ -105,7 +105,7 @@ const CardOption = ({ selectedItem }: Props) => {
           type="number"
           name="borderWidth"
           className="w-[40px]"
-          value={styles.borderWidth.split("px")[0]}
+          value={styles.borderWidth?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -116,7 +116,7 @@ const CardOption = ({ selectedItem }: Props) => {
           type="number"
           name="borderRadius"
           className="w-[40px]"
-          value={styles.borderRadius.split("px")[0]}
+          value={styles.borderRadius?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -136,7 +136,7 @@ const CardOption = ({ selectedItem }: Props) => {
           type="text"
           name="fontSize"
           className="w-[40px]"
-          value={styles.fontSize.split("px")[0]}
+          value={styles.fontSize?.split("px")[0] || 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -159,7 +159,7 @@ const CardOption = ({ selectedItem }: Props) => {
           type="number"
           className="w-[40px]"
           name="height"
-          value={styles.height.split("px")[0]}
+          value={styles.height?.split("px")[0]|| 0}
           onChange={pixelChange}
         />
         <span>px</span>
@@ -183,7 +183,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="columnGap"
-            value={styles.columnGap.split("px")[0]}
+            value={styles.columnGap?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -194,7 +194,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="rowGap"
-            value={styles.rowGap.split("px")[0]}
+            value={styles.rowGap?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -209,7 +209,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="paddingLeft"
-            value={styles.paddingLeft.split("px")[0]}
+            value={styles.paddingLeft?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -220,7 +220,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="paddingRight"
-            value={styles.paddingRight.split("px")[0]}
+            value={styles.paddingRight?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -231,7 +231,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="paddingTop"
-            value={styles.paddingTop.split("px")[0]}
+            value={styles.paddingTop?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -242,7 +242,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="paddingBottom"
-            value={styles.paddingBottom.split("px")[0]}
+            value={styles.paddingBottom?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -254,7 +254,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="marginLeft"
-            value={styles.marginLeft.split("px")[0]}
+            value={styles.marginLeft?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -265,7 +265,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="marginRight"
-            value={styles.marginRight.split("px")[0]}
+            value={styles.marginRight?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -276,7 +276,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="marginTop"
-            value={styles.marginTop.split("px")[0]}
+            value={styles.marginTop?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
@@ -287,7 +287,7 @@ const CardOption = ({ selectedItem }: Props) => {
             type="number"
             className="w-[40px]"
             name="marginBottom"
-            value={styles.marginBottom.split("px")[0]}
+            value={styles.marginBottom?.split("px")[0] || 0}
             onChange={pixelChange}
           />
           <span>px</span>
