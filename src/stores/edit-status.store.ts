@@ -3,7 +3,6 @@ import { ElementModelTree } from "@/models/element/element.model";
 import { ElementType } from "@/models/element/element.type";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-// import { createJSONStorage, persist } from "zustand/middleware";
 
 type State = {
   editStatus: EditStatus;

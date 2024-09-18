@@ -337,6 +337,11 @@ export class ElementModelTree {
 
     // Convert properties into valid HTML attributes
     for (const [key, value] of Object.entries(properties)) {
+      if (typeof value === "function") {
+        // Skip function properties
+        continue;
+      }
+
       if (key === "style" && typeof value === "object") {
         // Convert style object to inline style string
         const styleString = Object.entries(value)
