@@ -68,6 +68,7 @@ export const useEditStatusStore = create(
         if (selectedItemId) {
           const updatedElementTree = elementTree.clone();
           updatedElementTree.updateChildren(selectedItemId, text);
+          console.log(updatedElementTree, text);
           set({ elementTree: updatedElementTree });
         }
       },

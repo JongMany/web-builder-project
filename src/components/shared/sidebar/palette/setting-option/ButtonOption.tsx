@@ -40,12 +40,16 @@ export const ButtonOption = ({ selectedItem }: Props) => {
     removeElementItem();
   };
 
-  const [text, setText] = useState(() => {
+  const [text, setText] = useState<string>(() => {
     if (Array.isArray(selectedItem.children)) {
-      return (
-        selectedItem.children?.filter((item) => item.type === "Text")[0]
-          ?.properties?.text || ""
-      );
+      const element = selectedItem.children?.filter(
+        (item) => item.type === "Text"
+      )[0].children;
+      if (typeof element === "string") {
+        return element;
+      }
+
+      return "";
     }
     return "";
   });
@@ -54,7 +58,6 @@ export const ButtonOption = ({ selectedItem }: Props) => {
     updateTextElement(text);
   }, [text]);
 
-  console.log(selectedItem, text, selectedItem.children);
   return (
     <div className="px-4 py-2 flex flex-col justify-start items-start gap-[8px]">
       <h2 className="text-[16px] font-bold">버튼 스타일</h2>
