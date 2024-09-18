@@ -121,7 +121,6 @@ export class ElementModelTree {
     const element = this.findElement(id);
     if (element) {
       element.properties = { ...element.properties, ...properties };
-      console.log(element.properties);
     }
   }
 

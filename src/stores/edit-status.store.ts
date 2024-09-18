@@ -68,7 +68,6 @@ export const useEditStatusStore = create(
         if (selectedItemId) {
           const updatedElementTree = elementTree.clone();
           updatedElementTree.updateChildren(selectedItemId, text);
-          console.log(updatedElementTree, text);
           set({ elementTree: updatedElementTree });
         }
       },
@@ -117,8 +116,6 @@ export const useEditStatusStore = create(
           if (data) {
             const parsedData = JSON.parse(data);
             if (parsedData?.state?.elementTree?.root) {
-              console.log(parsedData.state.elementTree);
-
               const root = parsedData.state.elementTree.root;
               // Reconstruct the ElementModelTree
               const elementTree = new ElementModelTree();
@@ -132,7 +129,6 @@ export const useEditStatusStore = create(
         },
         setItem: (name, state) => {
           // Serialize the elementTree before storing
-          console.log("name", name, state);
           const serializedState = {
             ...state,
             elementTree: state.state.elementTree.serialize(),
