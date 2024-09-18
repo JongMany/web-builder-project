@@ -18,6 +18,7 @@ const Builder = () => {
     addElementItem,
     restoreEventHandlers,
   } = useEditStatusStore();
+
   const builderRef = useRef<HTMLDivElement>(null);
   // const elementTree = useRef(new ElementModelTree());
 
@@ -83,30 +84,16 @@ const Builder = () => {
           // detectSpaceHandler(e);
         },
       });
-      // elementTree.current.addElement(closestElementId, activeElement, {
-      // elementTree.addElement(closestElementId, activeElement, {
-      //   onClickHandler: (e: React.MouseEvent) => {
-      //     e.stopPropagation();
-      //     const target = e.target as HTMLElement;
-      //     setSelectedItemId(
-      //       target.getAttribute("data-element-id") || closestElementId
-      //     );
-      //   },
-      //   onMouseDownHandler: (e: React.MouseEvent) => {
-      //     console.log("dragging", e);
-      //     // detectSpaceHandler(e);
-      //   },
-      // });
     }
     setClosestElementId(null);
   };
 
-  // ref에 이벤트 핸들러 업데이트
+  // ref에 전역 이벤트 핸들러 업데이트
   useEffect(() => {
     addElementHandlerRef.current = addElementHandler;
   }, [closestElementId, activeElement]);
 
-  // 이벤트 등록
+  // window 이벤트 등록
   useEffect(() => {
     const handler = (ev: MouseEvent) => addElementHandlerRef.current?.(ev);
     window.addEventListener("mouseup", handler);
@@ -135,7 +122,7 @@ const Builder = () => {
   return (
     <div
       ref={builderRef}
-      className="w-full border-2 h-full"
+      className="w-full h-full border-2"
       onMouseMove={detectSpaceHandler}
       data-element-id="root"
     >

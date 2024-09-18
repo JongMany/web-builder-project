@@ -32,6 +32,7 @@ type Action = {
     onClickHandler: (e: React.MouseEvent) => void;
     onMouseDownHandler: (e: React.MouseEvent) => void;
   }) => void;
+  resetElementTree: () => void;
 };
 
 export const useEditStatusStore = create(
@@ -99,13 +100,15 @@ export const useEditStatusStore = create(
         updatedElementTree.restoreEventHandlers(handlers);
         set({ elementTree: updatedElementTree });
       },
+      resetElementTree: () => {
+        set({ elementTree: new ElementModelTree() });
+      },
     }),
     {
       name: "edit-status",
       storage: {
         getItem: (name) => {
           const data = localStorage.getItem(name);
-          console.log("getItem", data);
           if (data) {
             const parsedData = JSON.parse(data);
             if (parsedData?.state?.elementTree?.root) {
@@ -129,12 +132,9 @@ export const useEditStatusStore = create(
             ...state,
             elementTree: state.state.elementTree.serialize(),
           };
-          console.log(serializedState);
           localStorage.setItem(name, JSON.stringify(serializedState));
         },
         removeItem: (name) => {
-          console.log("removeItem", name);
-
           localStorage.removeItem(name);
         },
       },
